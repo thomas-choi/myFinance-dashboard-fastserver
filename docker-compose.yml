@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  financeagentserver:
+    build: .
+    container_name: financeagentserver
+    ports:
+      - "8000:8000"
+    environment:
+      - DBHOST=${DBHOST}
+      - DBPORT=${DBPORT}
+      - DBUSER=${DBUSER}
+      - DBPWD=${DBPWD}
+      - DBMKTDATA=${DBMKTDATA}
+      - APP_PORT=8000
+      - APP_HOST=0.0.0.0
+      - DEBUG=False
+    volumes:
+      - ./chat_history:/app/chat_history
+      - ./logs:/app/logs
+    networks:
+      - finance-network
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: my-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - finance-network
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+networks:
+  finance-network:
+    driver: bridge
+
+volumes:
+  redis-data:

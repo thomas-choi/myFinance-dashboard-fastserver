@@ -19,6 +19,12 @@ async def get_etf_options():
     try:
         df = TradingService.get_etf_options()
         
+        # Select and order columns as specified
+        etf_columns = ['Date','Type','Trend','Symbol','Expiration','PnC','L_Strike','H_Strike','Entry','Target','Target%','Stop','Stop%','Last','OPrice','Reward%','adjOPrice','AdjReward%']
+        # Only select columns that exist in the dataframe
+        available_columns = [col for col in etf_columns if col in df.columns]
+        df = df[available_columns]
+        
         logger.debug(f"ETF options DataFrame shape: {df.shape}")
         # Convert DataFrame to JSON-serializable list
         options = convert_dataframe_for_json(df)
@@ -47,6 +53,12 @@ async def get_stock_options():
     """
     try:
         df = TradingService.get_stock_options()
+        
+        # Select and order columns as specified
+        stock_columns = ['Date','Symbol','Expiration','PnC','Strike','Entry1','Entry2','Target','Target%','Stop','Stop%','Trade_Status','Description', 'OPrice','Reward%','Last']
+        # Only select columns that exist in the dataframe
+        available_columns = [col for col in stock_columns if col in df.columns]
+        df = df[available_columns]
         
         # Convert DataFrame to JSON-serializable list
         options = convert_dataframe_for_json(df)
